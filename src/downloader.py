@@ -1,13 +1,18 @@
 import sys, os
 from abc import ABC, abstractmethod
 from pytube import YouTube
+
 import threading
 
 sys.path.append(os.path.join(os.getcwd(), "."))
 
 
-class MediaDownloader (ABC):
-    ...
+class MediaDownload (ABC):
+
+    @abstractmethod
+    def start (self):
+        ...
+
 
 
 def download(yt_object : YouTube):
