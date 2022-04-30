@@ -1,7 +1,10 @@
 
-
 from dataclasses import dataclass, field
-from typing import List
+import dataclasses
+from io import TextIOWrapper
+from typing import Dict, List, Union
+from pathlib import Path
+import json
 
 
 @dataclass
@@ -46,5 +49,48 @@ class AudiosetClass:
     restrictions : List[str]
 
 
+def extract_audioset (file : Union[Path, str, TextIOWrapper], key : int) -> Dict[str, AudiosetClass]:
+    """ Load Ontology from JSON file
+    
+    :param file: Source file
+    :type Union[Path, str, TextIOWrapper]:
+    :param key: Select key type
+        0 -> id
+        1 -> name
 
+    :return Dict[str, AudiosetClass]:
+    """
 
+    if isinstance (file, TextIOWrapper):
+        ontology = json.load(file)
+
+    else:
+        with open(file, "r") as infile:
+            ontology = json.load(infile)
+
+    data = dict()
+
+    for item in ontology:
+        audioclass = AudiosetClass (
+            id = item["id"],
+            name = item["name"],
+            description= item["description"],
+            citation_uri= item["citation_uri"],
+            positive_examples=item["positive_examples"],
+            child_ids= item["child_ids"],
+            restrictions= item["restrictions"]
+        )
+        if key == 1:
+            data[item["name"]] = dataclasses.asdict(audioclass)
+        else:
+            data[item["id"]] = dataclasses.asdict(audioclass)
+
+    return data
+
+if __name__ == "__main__":
+
+    # with open(Path("ontology/ontology.json"), "r") as file:
+    #     data = extract_audioset(file)
+
+    data = extract_audioset(file=Path("ontology/ontology.json"), key=1)
+    print(json.dumps(data, indent=3))
