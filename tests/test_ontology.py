@@ -13,6 +13,9 @@ with open(path, "r") as file:
 
 
 def test_length():
-
+    """ Match length of external ontology source and extracted audio set
+    
+    """
     audioset_data = extract_audioset(path, key=1)
     assert len(control_data) == len(audioset_data)
+
