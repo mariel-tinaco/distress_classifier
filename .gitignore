@@ -156,6 +156,8 @@ cython_debug/
 audio/
 io/media/
 
+# Temp Files
+temp/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
