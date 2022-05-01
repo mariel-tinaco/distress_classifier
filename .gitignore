@@ -152,8 +152,10 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Audio Files
+# Media Files
 audio/
+io/media/
+
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
