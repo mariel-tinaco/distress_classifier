@@ -1,18 +1,19 @@
 import sys, os
 from pathlib import Path
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Any, List, Union, Protocol
+from typing import Any, List, Type, Union, Protocol
 import shutil
 import threading
 
 from pytube import YouTube, Stream
+from pytube.exceptions import VideoUnavailable, VideoRegionBlocked, VideoPrivate
 from pytube.cli import on_progress
 from pydub import AudioSegment
 from tqdm import tqdm
 
 sys.path.append(os.path.join(os.getcwd(), "."))
 
-from media import Media
+from src.media import Media
 
 
 
@@ -59,6 +60,7 @@ class YoutubeAudioDownloader (MediaDownloader):
             return self.yt
 
         except Exception as e:
+            print(e)
             raise e
 
 def trim_audio (path : str, start : float, end : float, output_file_format : str):
@@ -96,10 +98,13 @@ def download_audio(url_extension, file_ext : str, output_dir : Union[str, Path])
     :param output_dir: Download directory
     :type Union[Path, str]:  Path object or string
     """
+    try:
+        downloader = YoutubeAudioDownloader(file_ext=file_ext)
+        downloader.prepare(url_extension = url_extension)
+        downloader.run(output_dir = output_dir)
 
-    downloader = YoutubeAudioDownloader(file_ext=file_ext)
-    downloader.prepare(url_extension = url_extension)
-    downloader.run(output_dir = output_dir)
+    except Exception as e:
+        print(e)
 
     return downloader
 
@@ -124,13 +129,23 @@ def fetch_m4a_audio(media : Media):
     audio_path = "io/media/audio/"
     move_paths = []
 
-    for tag in media.tags:
-        label_path = Path(f"{audio_path}/{tag}/")
-        move_paths.append(label_path)
-        if tag not in os.listdir(audio_path):
-            os.mkdir(label_path)
-    
-    move_audio(f"{dl.title} (trimmed).wav", f"{temp_dir}/", move_paths)
+    try:
+        for tag in media.tags:
+            label_path = Path(f"{audio_path}/{tag}/")
+            move_paths.append(label_path)
+            if tag not in os.listdir(audio_path):
+                os.mkdir(label_path)
+        
+        print(move_paths)
+
+    except FileNotFoundError:
+        print('File Not Found')
+
+    # except TypeError:
+    #     print('TypeError')
+
+    # move_audio(f"{dl.title} (trimmed).wav", f"{temp_dir}/", move_paths)
+
 
 if __name__ == "__main__":
 
