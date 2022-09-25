@@ -6,6 +6,10 @@ import pandas
 from csv import reader
 from typing import Callable
 import tqdm
+import sys, os
+
+sys.path.append(os.path.join(os.getcwd(), '.'))
+
 
 from src.downloader import fetch_m4a_audio
 from src.media import Media
@@ -38,8 +42,10 @@ def audiosetLoader(file : TextIOWrapper) -> pandas.DataFrame:
                 Data[header[i]].append(col)
             else:
                 store.append(col.replace('"', '').replace(" ", ""))
-        Data[header[3]].append(store)
-    
+        Data[header[3]].append(tuple(store))
+
+
+
     data = pandas.DataFrame(Data)
 
     return data
@@ -136,8 +142,4 @@ if __name__ == "__main__":
     with open(Path(path), "r") as file:
         data = loader.load(file, audiosetLoader)
 
-    media_list = extract_media(data)
-
-    for media in media_list:
-        x = threading.Thread(target=fetch_m4a_audio, args=(media, ))    
-        x.start()
+    print(data)
