@@ -9,7 +9,6 @@ from pytube.exceptions import VideoPrivate
 from dataclasses import dataclass
 import sys, os
 from pydub import AudioSegment
-import sox
 
 sys.path.append(os.path.join(os.getcwd(), '.'))
 
