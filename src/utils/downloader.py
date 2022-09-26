@@ -3,7 +3,6 @@ from pathlib import Path
 from token import EXACT_TOKEN_TYPES
 from typing import Callable
 import numpy as np
-import librosa
 from pytube import YouTube, Stream
 from pytube.exceptions import VideoPrivate
 from dataclasses import dataclass
