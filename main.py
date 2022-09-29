@@ -16,7 +16,7 @@ from src.downloader import fetch_m4a_audio
 from src.utils.downloader import fullpipe
 
 
-def get_by_multiple_keywords (keywords : list, source_path):
+def get_intersection (keywords : list, source_path):
 
     processor = DataProcessor()
 
@@ -49,6 +49,8 @@ def get_by_multiple_keywords (keywords : list, source_path):
         pl.sync.run(stage)
 
 
+
+
 def get_by_keyword (keyword, source_path):
 
     processor = DataProcessor()
@@ -79,6 +81,6 @@ def get_by_keyword (keyword, source_path):
 
 if __name__ == "__main__":
 
-    get_by_multiple_keywords (['Horse', 'Cough'], source_path=Path("io/metadata/unbalanced_train_segments.csv"))
+    get_intersection (["Livestock, farm animals, working animals", 'Cough'], source_path=Path("io/metadata/unbalanced_train_segments.csv"))
 
-    # get_by_keyword("Cough", source_path = Path("io/metadata/balanced_train_segments.csv"))
+    # get_by_keyword("Clip-clop", source_path = Path("io/metadata/unbalanced_train_segments.csv"))

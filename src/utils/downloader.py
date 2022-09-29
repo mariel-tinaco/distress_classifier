@@ -53,6 +53,15 @@ def fullpipe (media : Media):
         
         os.remove(TEMP_DIR / filename)
 
+def convert_m4a_to_wav (m4a_file, dest_path):
+
+    if m4a_file:
+        sound_file = AudioSegment.from_file(TEMP_DIR / m4a_file, 'm4a')
+        wavfilename = m4a_file.split('.')[0] + '.wav'
+        destfilename = dest_path / wavfilename
+        sound_file.export(destfilename, 'wav')
+        os.remove(TEMP_DIR / m4a_file)
+    
 def yt_audio_downloader (yt_url_extension : str) -> np.ndarray:
 
     file_ext = 'm4a'
@@ -86,10 +95,15 @@ def yt_audio_downloader (yt_url_extension : str) -> np.ndarray:
 
 if __name__ == "__main__":
 
-    media_2 = Media (
-        url_extension="-2EKWgTNEYU",
-        start=30.000,
-        stop=40.000,
-        tags=["Radio"]
-    )
-    fullpipe(media_2)
+    # media_2 = Media (
+    #     url_extension="-2EKWgTNEYU",
+    #     start=30.000,
+    #     stop=40.000,
+    #     tags=["Radio"]
+    # )
+    # fullpipe(media_2)
+
+    with open("C:\\Users\\MTinaco\\Dev\\equine\\data\\metadata\\yt.txt", "r") as txtfile:
+        for line in txtfile.readlines():
+            fn = yt_audio_downloader(line)
+            convert_m4a_to_wav(fn, Path.cwd() / '../data/media/wav/cough')
