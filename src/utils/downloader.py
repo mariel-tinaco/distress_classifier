@@ -82,7 +82,7 @@ def yt_audio_downloader (yt_url_extension : str) -> np.ndarray:
         return fn
 
     except VideoPrivate:
-        print(f"Unable to download private video: {yt_url_extension}")
+        print(f"Unable to download private video with URL: http://www.youtube.com/watch?v={yt_url_extension}")
 
     except TypeError:
         print(f"Type error")
@@ -92,6 +92,34 @@ def yt_audio_downloader (yt_url_extension : str) -> np.ndarray:
 
     return
 
+def download_shorts(yt_url):
+
+    file_ext = 'm4a'
+
+    try:
+        yt = YouTube(f"https://www.youtube.com/shorts/{yt_url}")
+        fn = "{}.{}".format(
+            yt.title.replace(' ', '_') \
+                .replace('/', '_') \
+                .replace('(', '') \
+                .replace(')','') \
+                .replace('-','_'), 
+            file_ext)
+        stream = yt.streams.get_audio_only()
+        stream.download(output_path=TEMP_DIR, filename=fn)
+
+        return fn
+
+    except VideoPrivate:
+        print(f"Unable to download private video: {yt_url}")
+
+    except TypeError:
+        print(f"Type error")
+
+    except Exception as e:
+        print (e)
+
+    return
 
 if __name__ == "__main__":
 
@@ -103,7 +131,23 @@ if __name__ == "__main__":
     # )
     # fullpipe(media_2)
 
-    with open("C:\\Users\\MTinaco\\Dev\\equine\\data\\metadata\\yt.txt", "r") as txtfile:
-        for line in txtfile.readlines():
-            fn = yt_audio_downloader(line)
-            convert_m4a_to_wav(fn, Path.cwd() / '../data/media/wav/cough')
+    import pypeln as pl
+
+    short = None
+    # short = "https://www.youtube.com/shorts/G7ZcIPCMh0U"
+
+    if short:
+        fn = download_shorts (short)
+        convert_m4a_to_wav(fn, Path.cwd() / '../data/media/wav/cough')
+
+    else:
+        with open("C:\\Users\\MTinaco\\Dev\\equine\\data\\metadata\\yt.txt", "r") as txtfile:
+            for line in txtfile.readlines():
+                fn = yt_audio_downloader(line)
+                convert_m4a_to_wav(fn, Path.cwd() / '../data/media/wav/cough')
+
+
+    # fn = yt_audio_downloader('')
+    # convert_m4a_to_wav(fn, Path.cwd() / '../data/media/wav/cough')
+
+    
